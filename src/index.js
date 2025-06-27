@@ -1,5 +1,4 @@
-import mongoose from "mongoose";
-import dotenv from "dotenv";
+import express from 'express';
 import connectDb from "./db/db.js";
 
 const app = express();
