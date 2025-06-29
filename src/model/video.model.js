@@ -1,4 +1,5 @@
 import mongoose, {Schema} from 'mongoose';
+import mongooseAggregatePaginate from 'mongoose-aggregate-paginate-v2';
 
 const videoSchema = new Schema({
 
@@ -47,5 +48,16 @@ const videoSchema = new Schema({
     }
 
 }, {timestamps: true})
+
+videoSchema.plugin(mongooseAggregatePaginate) 
+
+// Why Use Plugins?
+// Plugins help you:
+
+// Avoid writing the same logic in every schema (DRY principle)
+
+// Reuse modular features across different models
+
+// Add advanced capabilities with one line (like soft delete, slug generation, pagination, etc.)
 
 export const Video = mongoose.model("Video", videoSchema)
