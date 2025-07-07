@@ -1,10 +1,11 @@
-import {asyncHandler} from "../util/asyncHandler.js"
+import { asyncHandler } from "../util/asyncHandler.js";
+import { uploadToCloudinary } from "../util/cloudinary.js";
+import { User } from "../model/user.model.js";
 
 const registerUser = asyncHandler(async (req, res) => {
+  const { fullName, email, userName, password } = req.body;
+  console.log("email: ", email);
+  
+});
 
-    res.status(200).json({
-        message: "ok"
-    })
-})
-
-export {registerUser}
+export { registerUser };
