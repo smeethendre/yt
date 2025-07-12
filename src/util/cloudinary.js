@@ -22,5 +22,4 @@ const uploadToCloudinary = async (asset) => {
   }
 };
 
-
-export {uploadToCloudinary};
+export { uploadToCloudinary };
