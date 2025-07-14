@@ -2,7 +2,6 @@ import { asyncHandler } from "../util/asyncHandler.js";
 import { uploadToCloudinary } from "../util/cloudinary.js";
 import { User } from "../model/user.model.js";
 import { ApiError } from "../util/apiError.js";
-import { uploadToCloudinary } from "../util/cloudinary.js";
 import { ApiResponse } from "../util/apiResponse.js";
 
 const registerUser = asyncHandler(async (req, res) => {
@@ -73,4 +72,36 @@ const registerUser = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, createdUser, "User registered successfully"));
 });
 
-export { registerUser };
+// check if email, username exist
+// if exists then check for password
+// if password is correct then send secure cookies
+// send a success response
+
+const loginUser = asyncHandler(async (req, res) => {
+  const { email, userName, password } = req.body;
+
+  if (userName || email === "") {
+    throw new ApiError(400, "Enter your username or Email ");
+  }
+
+  if (password === "") {
+    throw new ApiError(400, "Enter your password");
+  }
+
+  const existingUser = await User.findOne({
+    $or: [{ email }, { userName }],
+  });
+
+  if (!existingUser) {
+    throw new ApiError(404, "User doesn't exist");
+  }
+
+  if (existingUser) {
+    const checkPassword = async (password) => {
+      {
+      }
+    };
+  }
+});
+
+export { registerUser, loginUser };
