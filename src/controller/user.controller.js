@@ -14,7 +14,6 @@ const generateAccessAndRefreshToken = async (userId) => {
     await user.save({ validateBeforeSave: false });
 
     return { accessToken, refreshToken };
-    
   } catch (error) {
     throw new ApiError(501, "Something went wrong");
   }
@@ -82,7 +81,7 @@ const registerUser = asyncHandler(async (req, res) => {
   });
 
   const createdUser = await User.findById(user._id).select(
-    "-password -refereshToken"
+    "-password -refreshToken"
   );
 
   if (!createdUser) {
@@ -94,9 +93,10 @@ const registerUser = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, createdUser, "User registered successfully"));
 });
 
-// login a user
+// To login a user
 // check if email, username exist
 // if exists then check for password
+// access and refresh token
 // if password is correct then send secure cookies
 // send a success response
 
@@ -124,6 +124,43 @@ const loginUser = asyncHandler(async (req, res) => {
   if (!isPasswordValid) {
     throw new ApiError(401, "Password Incorrect");
   }
+
+  const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
+    user._id
+  );
+
+  const loggedInUser = await User.findById(user._id).select(
+    "-password -refreshToken"
+  );
+
+  const options = {
+    httpOnly: true,
+    secure: true,
+  };
+
+  return res
+    .status(200)
+    .cookie("accessToken", accessToken, options)
+    .cookie("refreshToken", refreshToken, options)
+    .json(
+      new ApiResponse(
+        200,
+        {
+          user: loggedInUser,
+          accessToken,
+          refreshToken,
+        },
+        "User LoggedIn Successfully"
+      )
+    );
+});
+
+// To logOut the user
+// remove the refreshToken from the cookies of the user
+// 
+
+const logoutUser = asyncHandler(async (req, res) => {
+
 });
 
 export { registerUser, loginUser };
