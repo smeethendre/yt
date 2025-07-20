@@ -4,6 +4,28 @@ import { User } from "../model/user.model.js";
 import { ApiError } from "../util/apiError.js";
 import { ApiResponse } from "../util/apiResponse.js";
 
+const generateAccessAndRefreshToken = async (userId) => {
+  try {
+    const user = await User.findById(userId);
+    const accessToken = user.generateAccessToken();
+    const refreshToken = user.generateRefreshToken();
+
+    user.refreshToken = refreshToken;
+    await user.save({ validateBeforeSave: false });
+
+    return { accessToken, refreshToken };
+    
+  } catch (error) {
+    throw new ApiError(501, "Something went wrong");
+  }
+};
+
+// to register the user
+// take all the info from req.body
+// check if all required fields are not left empty, if left empty then throw an error
+// check if the user already exists
+// if user exists throw error
+
 const registerUser = asyncHandler(async (req, res) => {
   const { fullName, email, userName, password } = req.body;
   console.log(fullName, email, userName, password);
@@ -72,6 +94,7 @@ const registerUser = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, createdUser, "User registered successfully"));
 });
 
+// login a user
 // check if email, username exist
 // if exists then check for password
 // if password is correct then send secure cookies
@@ -88,19 +111,18 @@ const loginUser = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Enter your password");
   }
 
-  const existingUser = await User.findOne({
+  const user = await User.findOne({
     $or: [{ email }, { userName }],
   });
 
-  if (!existingUser) {
+  if (!user) {
     throw new ApiError(404, "User doesn't exist");
   }
 
-  if (existingUser) {
-    const checkPassword = async (password) => {
-      {
-      }
-    };
+  const isPasswordValid = await user.isPasswordCorrect(password);
+
+  if (!isPasswordValid) {
+    throw new ApiError(401, "Password Incorrect");
   }
 });
 
