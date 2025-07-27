@@ -103,7 +103,7 @@ const registerUser = asyncHandler(async (req, res) => {
 const loginUser = asyncHandler(async (req, res) => {
   const { email, userName, password } = req.body;
 
-  if (userName || email === "") {
+  if (!userName && !email) {
     throw new ApiError(400, "Enter your username or Email ");
   }
 
@@ -160,7 +160,7 @@ const loginUser = asyncHandler(async (req, res) => {
 // 
 
 const logoutUser = asyncHandler(async (req, res) => {
-
+  
 });
 
 export { registerUser, loginUser };
