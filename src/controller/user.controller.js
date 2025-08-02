@@ -54,31 +54,42 @@ const registerUser = asyncHandler(async (req, res) => {
   }
   //
   const avatarLocalPath = req.files?.avatar[0]?.path;
+  console.log("a")
 
   const coverImageLocalPath = req.files?.coverImage[0]?.path;
 
-  if (!avatarLocalPath) {
-    throw new ApiError(400, "Upload your avatar");
-  }
+  // if (!avatarLocalPath) {
+  //   throw new ApiError(400, "Upload your avatar");
+  // }
+  console.log("b");
+  
 
   //
 
   const avatar = await uploadToCloudinary(avatarLocalPath);
 
+  console.log("c");
+  
+
   const coverImage = await uploadToCloudinary(coverImageLocalPath);
 
-  if (!avatar) {
-    throw new ApiError(400, "Upload your avatar");
-  }
+  // if (!avatar) {
+  //   throw new ApiError(400, "Upload your avatar");
+  // }
+  console.log("d");
+  
 
   const user = await User.create({
     fullName,
-    avatar: avatar.url,
+    avatar: avatar?.url || "",
     coverImage: coverImage?.url || "",
     email,
     password,
     userName: userName.toLowerCase(),
   });
+
+  console.log("e");
+  
 
   const createdUser = await User.findById(user._id).select(
     "-password -refreshToken"
