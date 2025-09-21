@@ -18,18 +18,8 @@ router.route("/register").post(
   registerUser
 );
 
-router.route("/login").post(
-  upload.fields([
-    {
-      name: "avatar",
-      maxCount: 1,
-    },
-    {
-      name: "coverImage",
-      maxCount: 1,
-    },
-  ]), 
-  loginUser
-);
+router.route("/login").post(loginUser);
+
+router.route("/logout").post(verifJWT, logoutUser)
 
 export default router;
